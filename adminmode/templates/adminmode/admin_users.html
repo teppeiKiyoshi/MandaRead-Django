@@ -1,0 +1,45 @@
+{% extends 'adminmode/base.html' %}
+
+{% block content %}
+<div class="mt-4">
+    <div class="container col-12 col-md-8 col-lg-9">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div class="container mt-3 mb-5 col-12 col-md-8 col-lg-9">
+        <h2 class="text-center mb-5">Manage Users</h2>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Is Staff</th>
+                    <th>Is Superuser</th>
+                    <th>Last Login</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <th>{{ user.username }}</th>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.is_staff }}</td>
+                    <td>{{ user.is_superuser }}</td>
+                    <td>{{ user.last_login }}</td>
+                    <td>
+                        <a href="{% url 'admin-edit-user' user.id %}" class = "btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'admin-delete-user' user.id %}" class = "btn btn-danger btn-sm">Terminate</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'adminmode/base.html' %}
+
+{% block content %}
+<div class="mt-4">
+    <div class="container col-12 col-md-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <div class="container col-12 col-md-8">
+        <h2 class = "mb-4">"{{ lesson_object.title }}" Test Items</h2>
+        <a href="{% url 'admin-assessment-create' lesson_object.pk %}" class = "btn btn-warning mb-3">Add a Question</a>
+    
+        {% if items %}
+            <table class="table table-hover table-sm mb-4">
+                <thead>
+                    <tr>
+                        <th scope="col" width = "90%">Items</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.question }}</td>
+                        <td class = "d-flex flex-column flex-md-row gap-1">
+                            <a href="{% url 'admin-assessment-update' item.pk %}?next={{current_page}}" class = "btn btn-warning btn-sm">Edit</a>
+                            <a href="{% url 'admin-assessment-delete' item.pk %}" class = "btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h4 class = "text-muted">Oops! no items here yet. You may add 1 by clicking the button above!</h4>
+        {% endif %}
+    
+    
+    
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="btn btn-warning mb-4"><i class="fas fa-chevron-left fa-sm"></i><i class="fas fa-chevron-left fa-sm"></i></a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-warning mb-4"><i class="fas fa-chevron-left fa-sm"></i></a>
+            {% endif %}
+        
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <a href="?page={{ num }}" class="btn btn-outline-secondary mb-4">{{ num }}</a>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} 
+                    <a href="?page={{ num }}" class="btn btn-warning mb-4">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-warning mb-4"><i class="fas fa-chevron-right fa-sm"></i></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-warning mb-4"><i class="fas fa-chevron-right fa-sm"></i><i class="fas fa-chevron-right fa-sm"></i></a>
+            {% endif %}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

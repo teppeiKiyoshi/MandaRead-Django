@@ -1,0 +1,29 @@
+{% extends "mandaread/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <main class="container col-lg-10">
+        <div class="d-flex justify-content-center flex-column p-5 mb-5 rounded">
+            <div class = "d-flex flex-column justify-content-center align-items-center p-4 rounded bg-warning">
+                <div>
+                    <img class = "rounded-circle account-img border border-secondary shadow" src="{{ user.profile.image.url }}">
+                </div>
+                <div class = "d-inline-flex flex-column justify-content-center">
+                    <h2 class = "text-center">{{ user.username }}</h2>
+                    <span class = "text-center">{{ user.email }}</span>
+                </div>
+            </div>
+
+            <form method = "POST" class = "p-5 shadow rounded" enctype = "multipart/form-data">
+                {% csrf_token %}
+                <fieldset class = "mb-3">
+                    <legend>Update Password</legend>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class = "d-flex flex-column flex-md-row justify-content-md-row">
+                    <a class = "btn btn-outline-secondary mb-2 mb-md-0 me-md-2" href = "{% url 'mandaread-edit-profile' %}" class="btn btn-outline-secondary" type="submit">Cancel</a>
+                    <button class = "btn btn-warning" type = "submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}

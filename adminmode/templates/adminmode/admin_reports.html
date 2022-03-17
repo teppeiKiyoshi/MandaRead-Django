@@ -1,0 +1,319 @@
+{% extends 'adminmode/base.html' %}
+
+
+{% block content %}
+<div class="container col-lg-9 mb-5">
+
+    <!--USERS TABLE-->
+    <div class="mb-5">
+        <div class="container d-flex justify-content-between mb-4 p-0">
+            <div class="d-flex flex-column">
+                {% if request.resolver_match.kwargs.report == 'users' %}
+                    {% if request.resolver_match.kwargs.filter == 'byday' %}
+                        <h2 class = "me-3">Users by day</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                        <h2 class = "me-3">Users by week</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                        <h2 class = "me-3">Users by month</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                        <h2 class = "me-3">Users by year</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                        <h2 class = "me-3">Users from: "{{ date_start }}" to: "{{ date_end }}"</h2>
+                    {% endif %}
+                    <div>(Total Users: {{ users.count }})</div>
+                {% elif request.resolver_match.kwargs.report == 'logs' %}
+                    {% if request.resolver_match.kwargs.filter == 'byday' %}
+                        <h2 class = "me-3">User Logs by day</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                        <h2 class = "me-3">User Logs by week</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                        <h2 class = "me-3">User Logs by month</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                        <h2 class = "me-3">User Logs by year</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                        <h2 class = "me-3">User Logs from: "{{ date_start }}" to: "{{ date_end }}"</h2>
+                    {% endif %}
+                    <div>(Total Logs: {{ logs.count }})</div>
+                {% elif request.resolver_match.kwargs.report == 'adminlogs' %}
+                    {% if request.resolver_match.kwargs.filter == 'byday' %}
+                        <h2 class = "me-3">Admin Logs by day</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                        <h2 class = "me-3">Admin Logs by week</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                        <h2 class = "me-3">Admin Logs by month</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                        <h2 class = "me-3">Admin Logs by year</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                        <h2 class = "me-3">Admin Logs from: "{{ date_start }}" to: "{{ date_end }}"</h2>
+                    {% endif %}
+                    <div>(Total Logs: {{ admin_logs.count }})</div>
+                {% elif request.resolver_match.kwargs.report == 'achievements' %}
+                    {% if request.resolver_match.kwargs.filter == 'byday' %}
+                        <h2 class = "me-3">Achievements by day</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                        <h2 class = "me-3">Achievements by week</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                        <h2 class = "me-3">Achievements by month</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                        <h2 class = "me-3">Achievements by year</h2>
+                    {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                        <h2 class = "me-3">Achievements from: "{{ date_start }}" to: "{{ date_end }}"</h2>
+                    {% endif %}
+                    <div>(Total Achievements: {{ achievements.count }})</div>
+                {% endif %}
+            </div>
+            <div class="d-flex flex-column-reverse justify-content-center align-items-end align-items-lg-start flex-lg-row justify-content-lg-end">
+                <div class = 'input-dates me-lg-2 pe-lg-2 border-end border-secondary border-css' id = 'date-range-picker'>
+                    <!--DATE RANGE PICKER-->
+                    <div id="range" class = "d-flex align-items-center gap-2 mb-0">
+                        <input type="text" name="start" id = "range-start" class = "form-control form-control-sm" placeholder = "Start" readonly>
+                        <span>To</span>
+                        <input type="text" name="end" id = "range-end" class = "form-control form-control-sm" placeholder = "End" readonly>
+                        <button id = "filter-range" class = 'btn btn-sm btn-warning'>Filter</button>
+                        <input id = 'current-url' type = 'hidden' value = "{% url 'admin-reports' request.resolver_match.kwargs.report 'byrange' %}">
+                    </div>
+                </div>
+                <div class = 'd-flex gap-2 mb-2 mb-lg-0'>
+                    <div class="dropdown">
+                        <a class="btn btn-warning btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Report
+                        </a>
+    
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <!--IF FILTER IS BY RANGE, AND WITH PARAMS-->
+                            {% if "byrange" in request.path and request.GET.start %}
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'users' request.resolver_match.kwargs.filter %}?start={{ request.GET.start }}&end={{ request.GET.end }}">Users</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'logs' request.resolver_match.kwargs.filter %}?start={{ request.GET.start }}&end={{ request.GET.end }}">User Logs</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'adminlogs' request.resolver_match.kwargs.filter %}?start={{ request.GET.start }}&end={{ request.GET.end }}">Admin Logs</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'achievements' request.resolver_match.kwargs.filter %}?start={{ request.GET.start }}&end={{ request.GET.end }}">Achievements</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'users' request.resolver_match.kwargs.filter %}">Users</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'logs' request.resolver_match.kwargs.filter %}">User Logs</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'adminlogs' request.resolver_match.kwargs.filter %}">Admin Logs</a></li>
+                                <li><a class="dropdown-item" href="{% url 'admin-reports' 'achievements' request.resolver_match.kwargs.filter %}">Achievements</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <a class="btn btn-warning btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Filter by
+                        </a>
+    
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'admin-reports' request.resolver_match.kwargs.report 'byday' %}">By day</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin-reports' request.resolver_match.kwargs.report 'byweek' %}">By week</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin-reports' request.resolver_match.kwargs.report 'bymonth' %}">By month</a></li>
+                            <li><a class="dropdown-item" href="{% url 'admin-reports' request.resolver_match.kwargs.report 'byyear' %}">By year</a></li>
+                            <li><button class="dropdown-item" id = "dropdown-range">By range</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>  
+        </div>
+
+        {% if request.resolver_match.kwargs.report == 'users' %}
+            <!--USERS-->
+
+            {% if request.resolver_match.kwargs.filter == 'byday' %}
+                {% regroup users by date_joined|date:"M d, Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                {% regroup users by date_joined|date:"W (Y)" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                {% regroup users by date_joined|date:"M Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                {% regroup users by date_joined|date:"Y" as obj %}
+            {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                {% regroup users by date_joined|date:"M d, Y" as obj %}
+            {% endif %} 
+
+            {% for group in obj %}
+                <div>
+                    {% if request.resolver_match.kwargs.filter == 'byweek' %}
+                        <span class = "h4">Week {{ group.grouper }}</span>
+                    {% else %}
+                        <span class = "h4">{{ group.grouper }}</span>
+                    {% endif %}
+                    <table class="table table-hover mb-5">
+                        <thead>
+                            <tr class = "fw-normal">
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Staff</th>
+                                <th>Superuser</th>
+                                <th>Last Login</th>
+                                <th>Date Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <br/>
+                            {% for object in group.list %}
+                                <tr>
+                                    <td class="text-break fw-bold">{{ object.username }}</td>
+                                    <td class="text-break">{{ object.email }}</td>
+                                    <td class="text-break">{{ object.is_staff }}</td>
+                                    <td class="text-break">{{ object.is_superuser }}</td>
+                                    <td class="text-break">{{ object.last_login }}</td>
+                                    <td class="text-break">{{ object.date_joined }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% empty %}
+                <h3 class = "text-muted">Nothing to see here</h3>
+            {% endfor %}
+        
+
+        {% elif request.resolver_match.kwargs.report == 'logs' %}
+            <!--USER LOGS-->
+
+            {% if request.resolver_match.kwargs.filter == 'byday' %}
+                {% regroup logs by date_time_logged|date:"M d, Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                {% regroup logs by date_time_logged|date:"W (Y)" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                {% regroup logs by date_time_logged|date:"M Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                {% regroup logs by date_time_logged|date:"Y" as obj %}
+            {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                {% regroup logs by date_time_logged|date:"M d, Y" as obj %}
+            {% endif %} 
+
+            {% for group in obj %}
+                <div>
+                    {% if request.resolver_match.kwargs.filter == 'byweek' %}
+                        <span class = "h4">Week {{ group.grouper }}</span>
+                    {% else %}
+                        <span class = "h4">{{ group.grouper }}</span>
+                    {% endif %}
+                    <table class="table table-hover mb-5 mt-2">
+                        <thead>
+                            <tr class = "fw-normal">
+                                <th>Log by</th>
+                                <th>Action</th>
+                                <th>Date/Time logged</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <br/>
+                            {% for object in group.list %}
+                                <tr>
+                                    <td class="text-break fw-bold">{{ object.log_by }}</td>
+                                    <td class="text-break">{{ object.action }}</td>
+                                    <td class="text-break">{{ object.date_time_logged }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% empty %}
+                <h3 class = "text-muted">Nothing to see here</h3>
+            {% endfor %}
+
+        {% elif request.resolver_match.kwargs.report == 'adminlogs' %}
+            <!--ADMIN LOGS-->
+
+            {% if request.resolver_match.kwargs.filter == 'byday' %}
+                {% regroup admin_logs by action_time|date:"M d, Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                {% regroup admin_logs by action_time|date:"W (Y)" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                {% regroup admin_logs by action_time|date:"M Y" as obj %}  
+            {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                {% regroup admin_logs by action_time|date:"Y" as obj %}
+            {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                {% regroup admin_logs by action_time|date:"M d, Y" as obj %}
+            {% endif %} 
+
+            {% for group in obj %}
+                <div>
+                    {% if request.resolver_match.kwargs.filter == 'byweek' %}
+                        <span class = "h4">Week {{ group.grouper }}</span>
+                    {% else %}
+                        <span class = "h4">{{ group.grouper }}</span>
+                    {% endif %}
+                    <table class="table table-hover mb-5 mt-2">
+                        <thead>
+                            <tr class = "fw-normal">
+                                <th width = "20%">Log by</th>
+                                <th width = "60%">Action</th>
+                                <th width = "20%">Date/Time logged</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <br/>
+                            {% for object in group.list %}
+                                <tr>
+                                    <td class="text-break fw-bold">{{ object.user }}</td>
+                                    <td class="text-break">{{ object }}</td>
+                                    <td class="text-break">{{ object.action_time }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% empty %}
+                <h3 class = "text-muted">Nothing to see here</h3>
+            {% endfor %}
+
+        {% elif request.resolver_match.kwargs.report == 'achievements' %}
+            <!--ACHIEVEMENTS-->
+
+            <!--Group achievements by user-->
+            {% regroup achievements by achieved_by as user %}
+            
+            
+            {% for username in user %}
+                <div class = "mb-5">
+                    <div>
+                        <h3>User: {{ username.grouper }}</h3>
+                    </div>
+    
+                    
+                    {% if request.resolver_match.kwargs.filter == 'byday' %}
+                        {% regroup username.list by date_time_achieved|date:"M d, Y" as achievement_grouped %}  
+                    {% elif request.resolver_match.kwargs.filter == 'byweek' %}
+                        {% regroup username.list by date_time_achieved|date:"W (Y)" as achievement_grouped %}  
+                    {% elif request.resolver_match.kwargs.filter == 'bymonth' %}
+                        {% regroup username.list by date_time_achieved|date:"M Y" as achievement_grouped %}  
+                    {% elif request.resolver_match.kwargs.filter == 'byyear' %}
+                        {% regroup username.list by date_time_achieved|date:"Y" as achievement_grouped %}
+                    {% elif request.resolver_match.kwargs.filter == 'byrange' %}
+                        {% regroup username.list by date_time_achieved|date:"M d, Y" as achievement_grouped %}
+                    {% endif %} 
+                    
+                    {% for user_achievements in achievement_grouped %}
+                        {% if request.resolver_match.kwargs.filter == 'byweek' %}
+                            <h5 class = "text-muted">Week {{ user_achievements.grouper }}</h5>
+                        {% else %}
+                            <h5 class = "text-muted">{{ user_achievements.grouper }}</h5>
+                        {% endif %}
+                        <table class="table table-hover mb-4 mt-2">
+                            <thead>
+                                <tr class = "fw-normal">
+                                    <th width="50%">Achievement</th>
+                                    <th width="50%">Date/Time achieved</th>
+                                </tr>
+                            </thead>
+                        
+                        <tbody>
+                            {% for ach in user_achievements.list %}
+                                <tr>
+                                    <td>{{ ach.achievement }}</td>
+                                    <td>{{ ach.date_time_achieved }}</td>
+                                </tr>    
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endfor %}
+                </div>
+            {% empty %}
+                <h3 class = "text-muted">Nothing to see here</h3>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <!--USERS TABLE END-->
+</div>
+{% endblock %}

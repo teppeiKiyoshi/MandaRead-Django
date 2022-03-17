@@ -1,0 +1,16 @@
+{% extends 'mandaread/base.html' %}
+
+{% block content %}
+<main class="container d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center flex-column col-md-10 col-lg-7 p-5">
+        <div class = "text-center">
+            <h2>Whoa there, {{ user.username }}!</h2>
+            <p>The Mandaread community is saddened to see you leave. Are you really sure about this? All data, and progresses within this account will be deleted. Once you accept, there's no going back</p>
+        </div>
+        <div class = "d-flex flex-column flex-md-row justify-content-md-center w-100">
+            <a href = "{% url 'mandaread-edit-profile' %}" class = "btn btn-outline-secondary mb-1 mx-md-1">I change my mind</a>
+            <a href = "{% url 'mandaread-acc-deleted' %}" class = "btn btn-danger mb-1 mx-md-1">I'm sure</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

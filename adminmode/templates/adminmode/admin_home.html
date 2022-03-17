@@ -1,0 +1,67 @@
+{% extends 'adminmode/base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="d-flex justify-content-between flex-column p-4 rounded">
+        <div class="d-flex">
+            <div class="me-4 d-flex flex-column align-items-center justify-content-center col-12" id = "profile-pic">
+                <img class="rounded-circle account-img border border-secondary mb-3 shadow" src="{{ user.profile.image.url }}">
+                <h2>{{ user.username }}</h2>
+                <h5 class = "mb-4">(Admin Mode)</h5>
+                <div>
+                    <a href = "{% url 'admin-users' %}" class = "btn bg-secondary bg-opacity-25 shadow-sm btn-sm">Manage Users</a>
+                    <a href = "{% url 'admin-reports' 'users' 'byday'  %}" class = "btn bg-secondary bg-opacity-25 shadow-sm btn-sm">Reports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="container mb-3">
+    <h2 class="text-center"></h2>
+</div>
+
+<div class="container col-12 col-lg-9 mb-5">
+    <div class="d-flex flex-column flex-md-row gap-4">
+        <div class="col">
+            <div class="card shadow">
+                <img src="https://media.istockphoto.com/photos/learning-chinese-picture-id157481419?k=20&m=157481419&s=612x612&w=0&h=-c3zlT5IPCpX3jMGkOLmjM21MdRxp2P7BhreCi-y6R8="
+                    class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Lessons</h5>
+                    <p class="card-text">Create, delete, and edit Lessons</p>
+                    <div class="col w-100 text-end">
+                        <a href="{% url 'admin-lessons' %}" class="btn btn-warning col-12 col-xl-3">Manage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card shadow">
+                <img src="https://media.istockphoto.com/photos/chinese-students-and-teacher-working-together-hong-kong-asia-picture-id492197413?k=20&m=492197413&s=612x612&w=0&h=FMw27sDvQsg4a8SCgsdilR-Dro1ajnfT7wrd4kdHR04="
+                    class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Assessments</h5>
+                    <p class="card-text">Edit, or add questions on each lesson</p>
+                    <div class="col w-100 text-end">
+                        <a href="{% url 'admin-assessments' %}" class="btn btn-warning col-12 col-xl-3">Manage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+        <div class="card shadow col-12 col-md-6">
+            <img src="https://media.istockphoto.com/photos/dictionary-chineseenglish-picture-id137859472?k=20&m=137859472&s=612x612&w=0&h=Zctp6LFd8LYP7zuId96fwd6R3dOS8PymGNK5EvmJqNY="
+                class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Dictionary</h5>
+                <p class="card-text">Add or delete words to the dictionary!</p>
+                <div class="col w-100 text-end">
+                    <a href="{% url 'admin-dict' %}" class="btn btn-warning col-12 col-xl-3">Manage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

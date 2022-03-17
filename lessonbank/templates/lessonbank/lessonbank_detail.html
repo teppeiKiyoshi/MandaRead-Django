@@ -1,0 +1,82 @@
+{% extends 'mandaread/base.html' %}
+
+{% block content %}
+<div class="container d-flex flex-column-reverse flex-lg-row col-12 col-lg-9 mb-5">
+    <div class="me-lg-5 col-lg-3">
+        <div class="content-section">
+            <h4>Shortcuts</h4>
+            
+            <span>HSK 1</span>
+            <ul class="list-group mt-2 mb-4">
+                {% if lesson_list_1 %}
+                    {% for lesson in lesson_list_1 %}
+                        {% if lesson.id == object.id %}
+                            <button class="list-group-item list-group-item-light bg-warning border-0 text-white fw-bold text-start">{{ lesson.title }}</button>
+                        {% else %}
+                            <a class="list-group-item list-group-item-light" href = "{% url 'mandaread-lesson' lesson.id %}">{{ lesson.title }}</a>         
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <span class="text-muted h6">Oops! no lessons here yet!</span>
+                {% endif %}
+            </ul>
+
+            <span>HSK 2</span>
+            <ul class="list-group mt-2 mb-4">
+                {% if lesson_list_2 %}
+                    {% for lesson in lesson_list_2 %}
+                        {% if lesson.id == object.id %}
+                            <button class="list-group-item list-group-item-light bg-warning border-0 text-white fw-bold text-start">{{ lesson.title }}</button>
+                        {% else %}
+                            <a class="list-group-item list-group-item-light" href="{% url 'mandaread-lesson' lesson.id %}">{{ lesson.title }}</a>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <span class = "text-muted h6">Oops! no lessons here yet!</span>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="d-flex flex-column mb-5 w-100">
+        <div class="d-flex flex-column">
+            <div class = "mb-3 align-self-end">
+                <a href = "{% url 'mandaread-assessment' object.id %}" class="btn btn-warning">Assessment</a>
+            </div>
+            <h2 class = "me-3">{{ object.title }}</h2>
+        </div>
+        <p class="text-secondary">HSK {{ object.hsk }}</p>
+        <p class="mb-5">{{ object.description|linebreaksbr }}</p>
+        
+        <!--TABLE START-->
+        {% if object.enable_table == True %}
+            <div class = "d-flex justify-content-between flex-column-reverse flex-md-row">
+                <div class = "text-center">
+                    <i class="fas fa-volume-up fa-lg me-2 mb-3"></i>
+                    <span>Click on the Hanzi character to hear its pronounciation.</span>
+                </div>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Hanzi</th>
+                        <th scope="col">Pinyin</th>
+                        <th scope="col">English</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in lesson_items %}
+                        <tr>
+                            <td class = "hanzi" role = "button" data-toggle="tooltip" data-placement="left" title="Click me!">{{ item.hanzi }}</td>
+                            <td>{{ item.pinyin }}</td>
+                            <td >{{ item.definition }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+        <!--TABLE END-->
+    </div>
+</div>
+{% endblock %}
